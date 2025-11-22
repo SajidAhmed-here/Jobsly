@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}User Details - {{ user.username }} - Jobsly Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-user me-2"></i>User Details: {{ user.username }}</h2>
+                <div>
+                    <a href="{% url 'admin_user_management' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Users
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- User Information -->
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">User Information</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Update User
+                            </button>
+                            <a href="{% url 'admin_toggle_user_active' user.id %}" class="btn btn-{% if user.is_active %}warning{% else %}success{% endif %}">
+                                <i class="fas fa-{% if user.is_active %}times{% else %}check{% endif %} me-2"></i>
+                                {% if user.is_active %}Deactivate{% else %}Activate{% endif %} User
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Profile Details -->
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Profile Details</h5>
+                </div>
+                <div class="card-body">
+                    {% if user_data.profile %}
+                        {% if user.role == 'applicant' %}
+                            <p><strong>Full Name:</strong> {{ user_data.profile.full_name }}</p>
+                            <p><strong>Phone:</strong> {{ user_data.profile.phone }}</p>
+                            <p><strong>Skills:</strong> {{ user_data.profile.skills|linebreaks }}</p>
+                            <p><strong>Education:</strong> {{ user_data.profile.education|linebreaks }}</p>
+                            {% if user_data.profile.cv %}
+                            <a href="{{ user_data.profile.cv.url }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                                <i class="fas fa-download me-1"></i>Download CV
+                            </a>
+                            {% endif %}
+                        {% elif user.role == 'employer' %}
+                            <p><strong>Company Name:</strong> {{ user_data.profile.company_name }}</p>
+                            <p><strong>Industry:</strong> {{ user_data.profile.industry }}</p>
+                            <p><strong>Address:</strong> {{ user_data.profile.address }}</p>
+                            <p><strong>Description:</strong> {{ user_data.profile.description }}</p>
+                            {% if user_data.profile.website %}
+                            <p><strong>Website:</strong> <a href="{{ user_data.profile.website }}" target="_blank">{{ user_data.profile.website }}</a></p>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        <p class="text-muted">No profile information available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Activity -->
+    <div class="row">
+        {% if user.role == 'applicant' and user_data.applications %}
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Job Applications ({{ user_data.applications.count }})</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Company</th>
+                                    <th>Status</th>
+                                    <th>Applied Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for application in user_data.applications %}
+                                <tr>
+                                    <td>{{ application.job.title }}</td>
+                                    <td>{{ application.job.employer.company_name }}</td>
+                                    <td>
+                                        <span class="badge bg-{% if application.status == 'applied' %}secondary{% elif application.status == 'under_review' %}info{% elif application.status == 'shortlisted' %}warning{% elif application.status == 'rejected' %}danger{% else %}success{% endif %}">
+                                            {{ application.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ application.applied_date|date:"M d, Y" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% elif user.role == 'employer' and user_data.jobs %}
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0">Posted Jobs ({{ user_data.jobs.count }})</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Location</th>
+                                    <th>Status</th>
+                                    <th>Applications</th>
+                                    <th>Posted Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for job in user_data.jobs %}
+                                <tr>
+                                    <td>{{ job.title }}</td>
+                                    <td>{{ job.location }}</td>
+                                    <td>
+                                        <span class="badge bg-{% if job.status == 'approved' %}success{% elif job.status == 'pending' %}warning{% else %}danger{% endif %}">
+                                            {{ job.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ job.applications.count }}</span>
+                                    </td>
+                                    <td>{{ job.created_at|date:"M d, Y" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

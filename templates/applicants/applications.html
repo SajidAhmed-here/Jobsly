@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}My Applications - Jobsly{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>My Job Applications</h2>
+        <a href="{% url 'job_list' %}" class="btn btn-primary">
+            <i class="fas fa-search me-2"></i>Find More Jobs
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Application History</h5>
+        </div>
+        <div class="card-body">
+            {% if applications %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Location</th>
+                            <th>Applied Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for application in applications %}
+                        <tr>
+                            <td>
+                                <strong>{{ application.job.title }}</strong>
+                                <br>
+                                <small class="text-muted">{{ application.job.get_job_type_display }}</small>
+                            </td>
+                            <td>{{ application.job.employer.company_name }}</td>
+                            <td>{{ application.job.location }}</td>
+                            <td>{{ application.applied_date|date:"M d, Y" }}</td>
+                            <td>
+                                <span class="badge 
+                                    {% if application.status == 'applied' %}bg-secondary
+                                    {% elif application.status == 'under_review' %}bg-info
+                                    {% elif application.status == 'shortlisted' %}bg-warning
+                                    {% elif application.status == 'rejected' %}bg-danger
+                                    {% else %}bg-success{% endif %}">
+                                    {{ application.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{% url 'job_detail' application.job.id %}" class="btn btn-sm btn-outline-primary">
+                                    View Job
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-paper-plane fa-3x text-muted mb-3"></i>
+                <h4>No Applications Yet</h4>
+                <p class="text-muted">You haven't applied to any jobs yet.</p>
+                <a href="{% url 'job_list' %}" class="btn btn-primary">Browse Available Jobs</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

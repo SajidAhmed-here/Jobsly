@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Jobs - Jobsly Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-tasks me-2"></i>Job Management</h2>
+                <div>
+                    <span class="badge bg-warning me-2">{{ pending_count }} Pending</span>
+                    <span class="badge bg-success me-2">{{ approved_count }} Approved</span>
+                    <span class="badge bg-danger">{{ rejected_count }} Rejected</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-6">
+                    <input type="text" name="search" class="form-control" placeholder="Search jobs..." value="{{ request.GET.search }}">
+                </div>
+                <div class="col-md-4">
+                    <select name="status" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option>
+                        <option value="approved" {% if request.GET.status == 'approved' %}selected{% endif %}>Approved</option>
+                        <option value="rejected" {% if request.GET.status == 'rejected' %}selected{% endif %}>Rejected</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Jobs Table -->
+    <div class="card">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">All Jobs</h5>
+        </div>
+        <div class="card-body">
+            {% if page_obj %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Job Title</th>
+                            <th>Company</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Active</th>
+                            <th>Posted</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in page_obj %}
+                        <tr>
+                            <td>
+                                <strong>{{ job.title }}</strong>
+                                <br>
+                                <small class="text-muted">{{ job.category.name }}</small>
+                            </td>
+                            <td>{{ job.employer.company_name }}</td>
+                            <td>{{ job.location }}</td>
+                            <td>
+                                <span class="badge bg-{% if job.status == 'approved' %}success{% elif job.status == 'pending' %}warning{% else %}danger{% endif %}">
+                                    {{ job.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-{% if job.is_active %}success{% else %}secondary{% endif %}">
+                                    {{ job.is_active|yesno:"Yes,No" }}
+                                </span>
+                            </td>
+                            <td>{{ job.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    {% if job.status == 'pending' %}
+                                    <a href="{% url 'admin_update_job_status' job.id 'approved' %}" class="btn btn-outline-success" title="Approve">
+                                        <i class="fas fa-check"></i>
+                                    </a>
+                                    <a href="{% url 'admin_update_job_status' job.id 'rejected' %}" class="btn btn-outline-danger" title="Reject">
+                                        <i class="fas fa-times"></i>
+                                    </a>
+                                    {% endif %}
+                                    <a href="{% url 'admin_toggle_job_active' job.id %}" class="btn btn-outline-{% if job.is_active %}warning{% else %}success{% endif %}" title="{% if job.is_active %}Deactivate{% else %}Activate{% endif %}">
+                                        <i class="fas fa-{% if job.is_active %}pause{% else %}play{% endif %}"></i>
+                                    </a>
+                                    <a href="{% url 'job_detail' job.id %}" class="btn btn-outline-primary" title="View">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <nav aria-label="Job pagination">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Previous</a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-briefcase fa-3x text-muted mb-3"></i>
+                <h4>No Jobs Found</h4>
+                <p class="text-muted">No jobs match your search criteria.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

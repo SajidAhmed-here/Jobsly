@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+
+{% block title %}System Statistics - Jobsly Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2><i class="fas fa-chart-bar me-2"></i>System Statistics</h2>
+            <p class="text-muted">Detailed system analytics and metrics</p>
+        </div>
+    </div>
+
+    <!-- User Statistics -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-users me-2"></i>User Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-2 mb-3">
+                            <div class="stat-card">
+                                <h3 class="text-primary">{{ user_stats.total }}</h3>
+                                <p class="text-muted">Total Users</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="stat-card">
+                                <h3 class="text-success">{{ user_stats.applicants }}</h3>
+                                <p class="text-muted">Job Seekers</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="stat-card">
+                                <h3 class="text-info">{{ user_stats.employers }}</h3>
+                                <p class="text-muted">Employers</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="stat-card">
+                                <h3 class="text-warning">{{ user_stats.admins }}</h3>
+                                <p class="text-muted">Admins</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="stat-card">
+                                <h3 class="text-success">{{ user_stats.active_today }}</h3>
+                                <p class="text-muted">Active Today</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="stat-card">
+                                <h3 class="text-primary">{{ user_stats.new_this_week }}</h3>
+                                <p class="text-muted">New This Week</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Statistics -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-briefcase me-2"></i>Job Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-2 mb-3">
+                            <div class="stat-card">
+                                <h3 class="text-primary">{{ job_stats.total }}</h3>
+                                <p class="text-muted">Total Jobs</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="stat-card">
+                                <h3 class="text-warning">{{ job_stats.pending }}</h3>
+                                <p class="text-muted">Pending</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="stat-card">
+                                <h3 class="text-success">{{ job_stats.approved }}</h3>
+                                <p class="text-muted">Approved</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="stat-card">
+                                <h3 class="text-danger">{{ job_stats.rejected }}</h3>
+                                <p class="text-muted">Rejected</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="stat-card">
+                                <h3 class="text-success">{{ job_stats.active }}</h3>
+                                <p class="text-muted">Active</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="stat-card">
+                                <h3 class="text-info">{{ job_stats.new_today }}</h3>
+                                <p class="text-muted">New Today</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Statistics -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i>Application Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-2 mb-3">
+                            <div class="stat-card">
+                                <h3 class="text-primary">{{ application_stats.total }}</h3>
+                                <p class="text-muted">Total Applications</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="stat-card">
+                                <h3 class="text-secondary">{{ application_stats.applied }}</h3>
+                                <p class="text-muted">Applied</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="stat-card">
+                                <h3 class="text-info">{{ application_stats.under_review }}</h3>
+                                <p class="text-muted">Under Review</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="stat-card">
+                                <h3 class="text-warning">{{ application_stats.shortlisted }}</h3>
+                                <p class="text-muted">Shortlisted</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="stat-card">
+                                <h3 class="text-danger">{{ application_stats.rejected }}</h3>
+                                <p class="text-muted">Rejected</p>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="stat-card">
+                                <h3 class="text-success">{{ application_stats.hired }}</h3>
+                                <p class="text-muted">Hired</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'admin_user_management' %}" class="btn btn-primary w-100">
+                                <i class="fas fa-users me-2"></i>Manage Users
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'admin_job_management' %}" class="btn btn-warning w-100">
+                                <i class="fas fa-tasks me-2"></i>Manage Jobs
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'admin_application_management' %}" class="btn btn-info w-100">
+                                <i class="fas fa-file-alt me-2"></i>View Applications
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a href="{% url 'admin_dashboard' %}" class="btn btn-success w-100">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.stat-card {
+    padding: 20px;
+    border-radius: 8px;
+    background: #f8f9fa;
+    transition: transform 0.2s;
+}
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+</style>
+{% endblock %}
