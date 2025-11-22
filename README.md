@@ -79,13 +79,75 @@ A complete job portal web application built with Django that connects job seeker
 ## 📁 Project Structure
 
 ```
-jobsly/
-├── accounts/          # User authentication & profiles
-├── jobs/             # Job posting & applications
-├── applicants/       # Job seeker dashboard
-├── templates/        # HTML templates
-├── static/          # CSS, JS, images
-└── media/           # Uploaded files (CVs, logos)
+jobsly/                           
+├── manage.py
+├── requirements.txt
+├── db.sqlite3
+├── media/                       
+│   ├── cvs/
+│   ├── company_logos/
+│   └── application_cvs/
+├── static/                     
+│   ├── css/
+│   │   └── style.css
+│   ├── js/
+│   │   └── main.js
+│   └── images/
+├── jobsly/                     
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── wsgi.py
+│   └── email_settings.py
+├── accounts/                   
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── views.py
+│   ├── urls.py
+│   ├── forms.py
+│   └── migrations/
+│       └── __init__.py
+├── jobs/                       
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── views.py
+│   ├── urls.py
+│   ├── forms.py
+│   ├── filters.py
+│   ├── signals.py
+│   └── migrations/
+│       └── __init__.py
+├── applicants/                 
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── views.py
+│   ├── urls.py
+│   └── migrations/
+│       └── __init__.py
+└── templates/                  
+    ├── base.html              
+    ├── accounts/              
+    │   ├── register.html      
+    │   ├── login.html         
+    │   └── profile.html       
+    ├── jobs/                  
+    │   ├── home.html          
+    │   ├── job_list.html      
+    │   ├── job_detail.html
+    │   ├── apply_job.html
+    │   ├── post_job.html
+    │   ├── manage_jobs.html
+    │   ├── applicants.html
+    │   └── application_success.html
+    └── applicants/            
+        ├── dashboard.html
+        └── applications.html
 ```
 
 ## 🔧 Key Features Implemented
